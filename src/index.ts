@@ -48,7 +48,7 @@ boot().then(() =>
 			messages.clear();
 			const MPM = uniqueMessages / uniqueUsers;
             console.log("mpm", MPM);
-			if (MPM >= 5) {
+			if (MPM >= 3) {
 				const result = uniqueMessages / MPM / 2;
                 console.log("result", result);
 				channel.setRateLimitPerUser(Math.round(result));
