@@ -41,13 +41,16 @@ boot().then(() =>
 			[...messages].map((message) => authors.add(message.author));
 			const uniqueUsers = authors.size;
 			const uniqueMessages = messages.size;
+            console.log(uniqueMessages, uniqueUsers);
 			const channel = mammot.client.channels.cache.get(
 				channels.chat
 			) as TextChannel;
 			messages.clear();
 			const MPM = uniqueMessages / uniqueUsers;
-			if (MPM >= 5) {
+            console.log("mpm", MPM);
+			if (MPM >= 3) {
 				const result = uniqueMessages / MPM / 2;
+                console.log("result", result);
 				channel.setRateLimitPerUser(Math.round(result));
 			} else {
 				channel.setRateLimitPerUser(0);
