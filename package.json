@@ -1,27 +1,29 @@
 {
-  "name": "builderbaut",
-  "version": "1.0.0",
-  "description": "The official discord bot for the buildergroop community.",
-  "main": "dist/index.js",
-  "scripts": {
-    "build": "tsc",
-    "dev": "ts-node-dev --poll --exit-child --transpile-only ./src/index.ts",
-    "start": "ts-node src/index.ts"
-  },
-  "author": "Aaryaman Maheshwari",
-  "license": "Apache-2.0",
-  "dependencies": {
-    "@mammot/core": "^0.0.12",
-    "discord.js": "^13.4.0",
-    "dotenv": "^14.2.0"
-  },
-  "devDependencies": {
-    "@types/node": "^16.11.12",
-    "@typescript-eslint/eslint-plugin": "^5.7.0",
-    "@typescript-eslint/parser": "^5.7.0",
-    "eslint": "^8.4.1",
-    "ts-node": "^8.10.1",
-    "ts-node-dev": "^1.0.0-pre.44",
-    "typescript": "^4.5.4"
-  }
+	"name": "builderbaut",
+	"version": "1.0.0",
+	"description": "The official discord bot for the buildergroop community.",
+	"main": "dist/index.js",
+	"scripts": {
+		"build": "tsc",
+		"dev": "ts-node-dev --poll --exit-child --transpile-only ./src/index.ts",
+		"start": "ts-node src/index.ts"
+	},
+	"author": "Aaryaman Maheshwari",
+	"license": "Apache-2.0",
+	"dependencies": {
+		"@mammot/core": "^0.0.12",
+		"discord.js": "^13.4.0",
+		"dotenv": "^16.0.0",
+		"node-cron": "^3.0.0"
+	},
+	"devDependencies": {
+		"@types/node": "^17.0.18",
+		"@types/node-cron": "^3.0.1",
+		"@typescript-eslint/eslint-plugin": "^5.12.0",
+		"@typescript-eslint/parser": "^5.12.0",
+		"eslint": "^8.9.0",
+		"ts-node": "^10.5.0",
+		"ts-node-dev": "^1.0.0-pre.44",
+		"typescript": "^4.5.5"
+	}
 }
