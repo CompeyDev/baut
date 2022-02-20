@@ -65,6 +65,12 @@ export const channels = {
 	rules: '913669662649237564',
 	roles: '934094517525676042',
 	chat: '913668807015407649',
+
+	wins: '944306109945118741',
+	help: '944306163443441746',
+	resources: '944306124595798057',
+	jobs: '944306172968718377',
+	showcase: '944306186398871552',
 };
 
 export const embedMessages: EmbedMessages = {

@@ -6,8 +6,8 @@ export default class {
 	public once?: boolean;
 
 	constructor(
-    private options: { name: keyof ClientEvents; once?: boolean },
-    public execute: EventFunction
+		private options: { name: keyof ClientEvents; once?: boolean },
+		public execute: EventFunction
 	) {
 		this.name = options.name;
 		this.once = options.once;
