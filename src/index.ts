@@ -41,17 +41,18 @@ boot().then(() =>
 			[...messages].map((message) => authors.add(message.author));
 			const uniqueUsers = authors.size;
 			const uniqueMessages = messages.size;
-            console.log(uniqueMessages, uniqueUsers);
+            console.log(`${uniqueMessages} message${uniqueMessages === 1 ? '' : 's'} were sent by ${uniqueUsers} user${uniqueUsers === 1 ? '' : 's'}.`);
 			const channel = mammot.client.channels.cache.get(
 				channels.chat
 			) as TextChannel;
 			messages.clear();
 			const MPM = uniqueMessages / uniqueUsers;
-            console.log("mpm", MPM);
-			if (MPM >= 5) {
+            console.log(`MPM: ${MPM}`);
+			if (MPM >= 6) {
 				const result = uniqueMessages / MPM / 2.5;
-                console.log("result", result);
-				channel.setRateLimitPerUser(Number(result.toString().split('.')[0]));
+                const slowmode = Number(result.toString().split('.')[0]);
+                console.log(`Setting slowmode to ${slowmode} second${slowmode === 1 ? "" : "s"}.`);
+				channel.setRateLimitPerUser(slowmode);
 			} else {
 				channel.setRateLimitPerUser(0);
 			}
