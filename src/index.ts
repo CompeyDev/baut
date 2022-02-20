@@ -10,8 +10,10 @@ import {
 import { clientOptions } from './config';
 import { token } from './constants';
 import { loadComponents, loadEvents } from './util/fileLoader';
-
-import { Collection } from 'discord.js';
+import { Collection, TextChannel, User } from 'discord.js';
+import { schedule } from 'node-cron';
+import messages from './messages';
+import { channels } from './guild';
 
 export const mammot = Mammot.client({
 	...clientOptions,
@@ -29,7 +31,27 @@ async function boot() {
 		Before1kmembers,
 	]);
 	await loadEvents(mammot, 'src/events');
-	mammot.name
+	mammot.name;
 }
 
-boot().then(() => mammot.login(token));
+boot().then(() =>
+	mammot.login(token).then(() => {
+		schedule('* * * * *', async () => {
+			const authors = new Set<User>();
+			[...messages].map((message) => authors.add(message.author));
+			const uniqueUsers = authors.size;
+			const uniqueMessages = messages.size;
+			const channel = mammot.client.channels.cache.get(
+				channels.chat
+			) as TextChannel;
+			messages.clear();
+			const MPM = uniqueMessages / uniqueUsers;
+			if (MPM >= 5) {
+				const result = uniqueMessages / MPM / 2;
+				channel.setRateLimitPerUser(Math.round(result));
+			} else {
+				channel.setRateLimitPerUser(0);
+			}
+		});
+	})
+);

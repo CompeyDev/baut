@@ -87,44 +87,53 @@ export function locationSelectMenu(member?: GuildMember) {
 					value: 'north_america', // If in config using object, use id of role or key name for value
 					emoji: '🇺🇸',
 					default:
-            member?.roles.cache.has(roles.location.north_america) || false,
+						member?.roles.cache.has(roles.location.north_america) ||
+						false,
 				},
 				{
 					label: 'South America',
 					value: 'south_america',
 					emoji: '🇧🇷',
 					default:
-            member?.roles.cache.has(roles.location.south_america) || false,
+						member?.roles.cache.has(roles.location.south_america) ||
+						false,
 				},
 				{
 					label: 'Europe',
 					value: 'europe',
 					emoji: '🇪🇺',
-					default: member?.roles.cache.has(roles.location.europe) || false,
+					default:
+						member?.roles.cache.has(roles.location.europe) || false,
 				},
 				{
 					label: 'Asia',
 					value: 'asia',
 					emoji: '🇮🇳',
-					default: member?.roles.cache.has(roles.location.asia) || false,
+					default:
+						member?.roles.cache.has(roles.location.asia) || false,
 				},
 				{
 					label: 'Africa',
 					value: 'africa',
 					emoji: '🇿🇦',
-					default: member?.roles.cache.has(roles.location.africa) || false,
+					default:
+						member?.roles.cache.has(roles.location.africa) || false,
 				},
 				{
 					label: 'Oceania',
 					value: 'oceania',
 					emoji: '🇦🇺',
-					default: member?.roles.cache.has(roles.location.oceania) || false,
+					default:
+						member?.roles.cache.has(roles.location.oceania) ||
+						false,
 				},
 				{
 					label: 'Antartica',
 					value: 'antartica',
 					emoji: '🇦🇶',
-					default: member?.roles.cache.has(roles.location.antartica) || false,
+					default:
+						member?.roles.cache.has(roles.location.antartica) ||
+						false,
 				},
 			])
 			.setCustomId('locationSelect')
@@ -163,25 +172,29 @@ export function pronounSelectMenu(member?: GuildMember) {
 					label: 'He/Him',
 					value: 'he', // If in config using array, use id of role for value
 					emoji: '♂',
-					default: member?.roles.cache.has(roles.pronouns.he) || false,
+					default:
+						member?.roles.cache.has(roles.pronouns.he) || false,
 				},
 				{
 					label: 'She/Her',
 					value: 'she',
 					emoji: '♀',
-					default: member?.roles.cache.has(roles.pronouns.she) || false,
+					default:
+						member?.roles.cache.has(roles.pronouns.she) || false,
 				},
 				{
 					label: 'They/Them',
 					value: 'they',
 					emoji: '⚧',
-					default: member?.roles.cache.has(roles.pronouns.they) || false,
+					default:
+						member?.roles.cache.has(roles.pronouns.they) || false,
 				},
 				{
 					label: 'Ask me!',
 					value: 'ask',
 					emoji: '❓',
-					default: member?.roles.cache.has(roles.pronouns.ask) || false,
+					default:
+						member?.roles.cache.has(roles.pronouns.ask) || false,
 				},
 			])
 			.setCustomId('pronounSelect')
