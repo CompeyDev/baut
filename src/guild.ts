@@ -1,8 +1,7 @@
 /*
 This file houses information such as ID's of specific entities (e.g roles, channels, etc) and other such information that is used throughout the bot. 
+PRODUCTION VARIABLES!!
 */
-
-import { EmbedMessages } from './types';
 
 export const roles = {
 	// Career
@@ -66,9 +65,9 @@ export const channels = {
 	roles: '934094517525676042',
 	chat: '913668807015407649',
 
-	wins: '944306109945118741',
-	help: '944306163443441746',
-	resources: '944306124595798057',
-	jobs: '944306172968718377',
-	showcase: '944306186398871552',
+	wins: '928628912282554398',
+	help: '926837221322022923',
+	resources: '913768563792297994',
+	jobs: '913742362344300544',
+	showcase: '913758897414762507',
 };
