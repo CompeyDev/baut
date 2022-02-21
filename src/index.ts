@@ -54,7 +54,7 @@ boot().then(() =>
 			messages.clear();
 			const MPM = uniqueMessages / uniqueUsers;
 			console.log(`MPM: ${MPM}`);
-			if (MPM >= 6) {
+			if (MPM >= 4) {
 				const result = uniqueMessages / MPM / 2.5;
 				const slowmode = Number(result.toString().split('.')[0]);
 				console.log(
