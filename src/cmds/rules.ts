@@ -6,7 +6,8 @@ import {
 	MessageButton,
 	MessageEmbed,
 } from 'discord.js';
-import { channels, embedMessages, media } from '../guild';
+import { embedMessages, media } from '../constants';
+import { channels } from '../guild';
 
 @config('rules', {
 	description: 'Send the server rules',
