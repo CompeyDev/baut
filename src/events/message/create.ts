@@ -25,43 +25,46 @@ export default new Event(
 			}
 		}
 
-		// SALVAGE_LIKES_TO_SCREAM
-		// switch (message.channel.id) {
-		// 	case channels.wins:
-		// 		message.startThread({
-		// 			name: 'Win Thread',
-		// 			autoArchiveDuration: 1440,
-		// 			reason: `[Baut AutoThread] Thread created for ${message.author.tag}`,
-		// 		});
-		// 		break;
-		// 	case channels.help:
-		// 		message.startThread({
-		// 			name: 'Help Thread',
-		// 			autoArchiveDuration: 1440,
-		// 			reason: `[Baut AutoThread] Thread created for ${message.author.tag}`,
-		// 		});
-		// 		break;
-		// 	case channels.resources:
-		// 		message.startThread({
-		// 			name: 'Resource Thread',
-		// 			autoArchiveDuration: 1440,
-		// 			reason: `[Baut AutoThread] Thread created for ${message.author.tag}`,
-		// 		});
-		// 		break;
-		// 	case channels.jobs:
-		// 		message.startThread({
-		// 			name: 'Job Thread',
-		// 			autoArchiveDuration: 1440,
-		// 			reason: `[Baut AutoThread] Thread created for ${message.author.tag}`,
-		// 		});
-		// 		break;
-		// 	case channels.showcase:
-		// 		message.startThread({
-		// 			name: 'Showcase Thread',
-		// 			autoArchiveDuration: 1440,
-		// 			reason: `[Baut AutoThread] Thread created for ${message.author.tag}`,
-		// 		});
-		// 		break;
-		// }
+		switch (message.channel.id) {
+			case channels.wins:
+				message.startThread({
+					name: `Win - ${message.content.slice(0, 20)}`,
+					autoArchiveDuration: 1440,
+					reason: `[Baut AutoThread] Thread created for ${message.author.tag}`,
+				});
+				break;
+			case channels.help:
+				message.startThread({
+					name: `Help - ${message.content.slice(0, 20)}`,
+					autoArchiveDuration: 1440,
+					reason: `[Baut AutoThread] Thread created for ${message.author.tag}`,
+				});
+				break;
+			case channels.resources:
+				message.startThread({
+					name: `Resource - ${message.content.slice(0, 20)}`,
+					autoArchiveDuration: 1440,
+					reason: `[Baut AutoThread] Thread created for ${message.author.tag}`,
+				});
+				break;
+			case channels.jobs:
+				message.startThread({
+					name: `Job - ${message.content.slice(0, 20)}`,
+					autoArchiveDuration: 1440,
+					reason: `[Baut AutoThread] Thread created for ${message.author.tag}`,
+				});
+				break;
+			case channels.showcase:
+				message.startThread({
+					name: `Showcase - ${message.content.slice(0, 20)}`,
+					autoArchiveDuration: 1440,
+					reason: `[Baut AutoThread] Thread created for ${message.author.tag}`,
+				});
+
+				message.react('👍🏻');
+				message.react('👎🏻');
+
+				break;
+		}
 	}
 );
