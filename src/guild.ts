@@ -56,6 +56,7 @@ export const roles = {
 	before1k: '939430231993876500',
 	onethousandthmember: '939455950920769597',
 	member: '913703107660230656',
+	builderhacksParticipant: '935525574980546631',
 } as const;
 
 export const channels = {
@@ -64,6 +65,9 @@ export const channels = {
 	rules: '913669662649237564',
 	roles: '934094517525676042',
 	chat: '913668807015407649',
+	builderhacks: '935260652031852604',
+	builderhacksS1Thread: '946475198318776330',
+	builderhacksFindATeammateThread: '946475145176957038',
 
 	wins: '928628912282554398',
 	help: '926837221322022923',

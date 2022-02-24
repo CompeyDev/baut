@@ -3,6 +3,7 @@ import { setUserEligible } from '../../functions/setUserEligible';
 import { channels } from '../../guild';
 import Event from '../../structures/Event';
 import messages from '../../messages';
+import { sendHackathonAnnouncement } from '../../functions/sendHackathonAnnouncement';
 
 export default new Event(
 	{
@@ -23,6 +24,13 @@ export default new Event(
 			} catch (error) {
 				console.error(error);
 			}
+		}
+
+		if (
+			message.channel.id === channels.builderhacks &&
+			message.content === '!builderhacks'
+		) {
+			sendHackathonAnnouncement(message);
 		}
 
 		switch (message.channel.id) {
@@ -61,8 +69,8 @@ export default new Event(
 					reason: `[Baut AutoThread] Thread created for ${message.author.tag}`,
 				});
 
-				message.react('👍🏻');
-				message.react('👎🏻');
+				message.react('👍');
+				message.react('👎');
 
 				break;
 		}
