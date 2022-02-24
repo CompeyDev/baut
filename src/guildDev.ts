@@ -67,3 +67,7 @@ export const channelsDev = {
 	jobs: '944306172968718377',
 	showcase: '944306186398871552',
 };
+
+export const emojis = {
+	arrow: '<:arrow:944594435172364328>',
+};
