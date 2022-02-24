@@ -3,3 +3,7 @@
 ### **join the community**
 
 https://discord.gg/builders
+
+### also check out builderhacks
+
+https://hacks.buildergroop.com
