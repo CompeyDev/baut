@@ -36,6 +36,8 @@ async function boot() {
 
 boot().then(() =>
 	mammot.login(token).then(() => {
+		mammot.client.on('rateLimit', console.log);
+
 		schedule('* * * * *', async () => {
 			const authors = new Set<User>();
 			[...messages].map((message) => authors.add(message.author));

@@ -26,10 +26,8 @@ export default new Event(
 			}
 		}
 
-		if (
-			message.channel.id === channels.builderhacks &&
-			message.content === '!builderhacks'
-		) {
+		if (message.content === '!builderhacks') {
+			console.log('[builderhacks command triggered]');
 			sendHackathonAnnouncement(message);
 		}
 
