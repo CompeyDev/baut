@@ -2,4 +2,4 @@
 
 ### **join the community**
 
-https://buildergroop.com
+https://discord.gg/builders

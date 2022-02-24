@@ -5,7 +5,8 @@ import {
 	MessageAttachment,
 } from 'discord.js';
 import { config, Command } from '@mammot/core';
-import { channels, media } from '../guild';
+import { channels } from '../guild';
+import { media } from '../constants';
 
 @config('roles', {
 	description: 'Select your self-assigned roles (Admin Only Command)',
