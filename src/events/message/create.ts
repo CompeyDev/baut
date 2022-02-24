@@ -69,8 +69,8 @@ export default new Event(
 					reason: `[Baut AutoThread] Thread created for ${message.author.tag}`,
 				});
 
-				message.react('👍🏻');
-				message.react('👎🏻');
+				message.react('👍');
+				message.react('👎');
 
 				break;
 		}
