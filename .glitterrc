@@ -1,0 +1,8 @@
+{
+    "custom_tasks": [
+        {
+            "name": "update-prod",
+            "execute": ["git fetch --all", "git checkout prod", "git reset origin/dev", "git push origin prod -f", "git checkout dev"]
+        }
+    ]
+}
