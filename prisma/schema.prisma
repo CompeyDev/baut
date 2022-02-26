@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model HackathonTeam {
+  id              String   @id @default(cuid())
+  name            String
+  isOnePersonTeam Boolean?
+
+  // the ID of the posting made via the webhook for this team
+  webhookPosting String?
+
+  creator   Participant @relation(name: "teamCreator", fields: [creatorId], references: [id])
+  creatorId String      @unique
+
+  members Participant[]    @relation(name: "teamMembers")
+  audits  HackathonAudit[]
+}
+
+model Participant {
+  // the discord id of the participant
+  id String @id
+
+  finishedAuditScheduling Boolean? @default(false)
+
+  hackathonTeam   HackathonTeam? @relation(name: "teamMembers", fields: [hackathonTeamId], references: [id])
+  hackathonTeamId String?
+
+  createdTeams HackathonTeam[] @relation("teamCreator")
+}
+
+enum AuditVersion {
+  FIRST
+  SECOND
+}
+
+model HackathonAudit {
+  id        String       @id @default(cuid())
+  epoch     String?
+  version   AuditVersion
+  completed Boolean?
+
+  hackathonTeam   HackathonTeam @relation(fields: [hackathonTeamId], references: [id])
+  hackathonTeamId String
+
+  // the discord ids of the people conducting the audit
+  conductors String[]
+}

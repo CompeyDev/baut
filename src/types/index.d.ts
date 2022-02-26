@@ -32,3 +32,8 @@ export interface EmbedMessages {
 	rules: string;
 	thankYou: string;
 }
+
+export type InteractionType =
+	| MessageComponentInteraction<CacheType>
+	| SelectMenuInteraction<CacheType>
+	| ButtonInteraction<CacheType>;

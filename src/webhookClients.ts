@@ -7,3 +7,7 @@ export const congratulatorWebhookClient = new WebhookClient({
 export const memberWebhookClient = new WebhookClient({
 	url: process.env.MEMBERS_WEBHOOK,
 });
+
+export const auditsWebhookClient = new WebhookClient({
+	url: process.env.AUDITS_WEBHOOK,
+});

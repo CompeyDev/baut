@@ -4,6 +4,8 @@ import { channels } from '../../guild';
 import Event from '../../structures/Event';
 import messages from '../../messages';
 import { sendHackathonAnnouncement } from '../../functions/sendHackathonAnnouncement';
+import { scheduleAudits } from '../../functions/scheduleAudits';
+import { executeOrFail } from '../../util/executeOrFail';
 
 export default new Event(
 	{
@@ -29,6 +31,19 @@ export default new Event(
 		if (message.content === '!builderhacks') {
 			console.log('[builderhacks command triggered]');
 			sendHackathonAnnouncement(message);
+		}
+
+		if (message.content === '!schedule_audit') {
+			console.log('[audit command triggered]');
+			await executeOrFail(
+				async () => {
+					scheduleAudits(message);
+				},
+				async () =>
+					await message.channel.send(
+						'We ran into an error. Please Contact a Server Admin.'
+					)
+			);
 		}
 
 		switch (message.channel.id) {
