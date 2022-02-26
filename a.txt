@@ -1,0 +1,10 @@
+- loading
+- button stuff with the logs
+   - completed
+   - take audit one
+   - take audit two
+   - request change from user and tell them its not working blah blah idk 
+- notifying participants
+- shit into excel
+- delete if it fucks up
+- time stuff
