@@ -44,7 +44,7 @@ enum AuditVersion {
 
 model HackathonAudit {
   id        String       @id @default(cuid())
-  epoch     String?
+  epoch     Int?
   version   AuditVersion
   completed Boolean?
 

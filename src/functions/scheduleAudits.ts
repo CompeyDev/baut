@@ -9,6 +9,7 @@ import {
 import { InteractionType } from '../types';
 import { prisma } from '../providers/prisma';
 import { auditsWebhookClient } from '../webhookClients';
+import { isDateInPast } from '../util/date';
 
 export async function scheduleAudits(message: Message) {
 	try {
@@ -265,8 +266,16 @@ export async function proposeAuditTimings(
 			return;
 		}
 
-		const auditOneTimestamp = epochTimestamps[0];
-		const auditTwoTimestamp = epochTimestamps[1];
+		const auditOneTimestamp = Number(epochTimestamps[0]);
+		const auditTwoTimestamp = Number(epochTimestamps[1]);
+
+		if ((auditOneTimestamp || auditTwoTimestamp) < 10) {
+			interaction.channel.send(
+				'Invalid Epoch Timestamp Format. Re-Asking Question.'
+			);
+			await proposeAuditTimings(client, interaction);
+			return;
+		}
 
 		// fetch the hackathon
 		const hackathon = await prisma.hackathonTeam.findFirst({

@@ -3,6 +3,5 @@
    - take audit one
    - take audit two
 - notifying participants
-- shit into excel
 - epoch time stuff lol
 - prevent double click of button
