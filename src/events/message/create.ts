@@ -33,7 +33,7 @@ export default new Event(
 			sendHackathonAnnouncement(message);
 		}
 
-		if (message.content === '!schedule_audit') {
+		if (message.content === '!schedule_audits') {
 			console.log('[audit command triggered]');
 			await executeOrFail(
 				async () => {

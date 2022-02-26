@@ -51,6 +51,6 @@ model HackathonAudit {
   hackathonTeam   HackathonTeam @relation(fields: [hackathonTeamId], references: [id])
   hackathonTeamId String
 
-  // the discord ids of the people conducting the audit
-  conductors String[]
+  // the discord id of the person conducting the audit
+  conductor String?
 }

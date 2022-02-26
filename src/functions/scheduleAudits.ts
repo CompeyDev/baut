@@ -1,4 +1,11 @@
-import { Client, Message, MessageActionRow, MessageButton } from 'discord.js';
+import {
+	Client,
+	Message,
+	MessageActionRow,
+	MessageButton,
+	MessagePayload,
+	WebhookMessageOptions,
+} from 'discord.js';
 import { InteractionType } from '../types';
 import { prisma } from '../providers/prisma';
 import { auditsWebhookClient } from '../webhookClients';
@@ -296,14 +303,9 @@ export async function closing(client: Client, interaction: InteractionType) {
 		});
 
 		// fetch the teammate
-		const teammate = (
-			await prisma.hackathonTeam.findFirst({
-				where: { creatorId: interaction.user.id },
-				include: {
-					members: true,
-				},
-			})
-		).members.filter((m) => m.id !== interaction.user.id)?.[0];
+		const teammate = hackathonTeam.members.filter(
+			(m) => m.id !== interaction.user.id
+		)?.[0];
 		console.log(teammate);
 
 		// update the team members
@@ -318,83 +320,165 @@ export async function closing(client: Client, interaction: InteractionType) {
 				data: { finishedAuditScheduling: true },
 			}));
 
-		// notify webhook
-		await auditsWebhookClient.send({
-			embeds: [
-				{
-					author: {
-						name: 'Audit Scheduling',
-						iconURL:
-							'https://cdn.discordapp.com/attachments/944240553153945710/947210546850185226/builderhacks_winter_emoji.png',
+		const webhookOptions: string | MessagePayload | WebhookMessageOptions =
+			{
+				embeds: [
+					{
+						author: {
+							name: 'Audit Scheduling',
+							iconURL:
+								'https://cdn.discordapp.com/attachments/944240553153945710/947210546850185226/builderhacks_winter_emoji.png',
+						},
+						fields: [
+							{
+								name: 'Team Name',
+								value: hackathonTeam.name,
+								inline: true,
+							},
+							{
+								name: 'Team Members',
+								value:
+									hackathonTeam.members.length === 1
+										? `<@${hackathonTeam.members[0].id}>`
+										: `<@${hackathonTeam.members[0].id}> and <@${hackathonTeam.members[1].id}>`,
+								inline: true,
+							},
+							{ name: '\u200B', value: '\u200B' },
+							{
+								name: 'Audit One Timing',
+								value: `<t:${hackathonTeam.audits[0].epoch}:f>`,
+								inline: true,
+							},
+							{
+								name: 'Audit One Conductor',
+								value: `${
+									hackathonTeam.audits[0].conductor ||
+									'None Yet'
+								}`,
+								inline: true,
+							},
+							{
+								name: 'Completed?',
+								value: `${
+									hackathonTeam.audits[0].completed || false
+								}`,
+								inline: true,
+							},
+							{ name: '\u200B', value: '\u200B' },
+							{
+								name: 'Audit Two Timing',
+								value: `<t:${hackathonTeam.audits[1].epoch}:f>`,
+								inline: true,
+							},
+							{
+								name: 'Audit Two Conductor',
+								value: `${
+									hackathonTeam.audits[0].conductor ||
+									'None Yet'
+								}`,
+								inline: true,
+							},
+							{
+								name: 'Completed?',
+								value: `${
+									hackathonTeam.audits[1].completed || false
+								}`,
+								inline: true,
+							},
+						],
+						footer: {
+							text: `ID: ${hackathonTeam.id} | Name: ${hackathonTeam.name}`,
+						},
 					},
-					fields: [
-						{
-							name: 'Team Name',
-							value: hackathonTeam.name,
-							inline: true,
-						},
-						{
-							name: 'Team Members',
-							value:
-								hackathonTeam.members.length === 1
-									? `<@${hackathonTeam.members[0].id}>`
-									: `<@${hackathonTeam.members[0].id}> and <@${hackathonTeam.members[1].id}>`,
-							inline: true,
-						},
-						{ name: '\u200B', value: '\u200B' },
-						{
-							name: 'Audit One Timing',
-							value: `<t:${hackathonTeam.audits[0].epoch}:f>`,
-							inline: true,
-						},
-						{
-							name: 'Audit One Conductors',
-							value: `${
-								hackathonTeam.audits[0].conductors
-									?.map((conductor) => `<@${conductor}>`)
-									.join(', ') || 'None Yet'
-							}`,
-							inline: true,
-						},
-						{
-							name: 'Completed?',
-							value: `${hackathonTeam.audits[0].completed}`,
-							inline: true,
-						},
-						{ name: '\u200B', value: '\u200B' },
-						{
-							name: 'Audit Two Timing',
-							value: `<t:${hackathonTeam.audits[1].epoch}:f>`,
-							inline: true,
-						},
-						{
-							name: 'Audit Two Conductors',
-							value: `${
-								hackathonTeam.audits[1].conductors
-									?.map((conductor) => `<@${conductor}>`)
-									.join(', ') || 'None Yet'
-							}`,
-							inline: true,
-						},
-						{
-							name: 'Completed?',
-							value: `${hackathonTeam.audits[1].completed}`,
-							inline: true,
-						},
-					],
-					footer: {
-						text: `ID: ${hackathonTeam.id} | Name: ${hackathonTeam.name}`,
-					},
-				},
-			],
+				],
+				components: [
+					new MessageActionRow().addComponents(
+						new MessageButton()
+							.setLabel(`Conduct Audit One`)
+							.setStyle('SECONDARY')
+							.setCustomId('conductAuditOne'),
+						new MessageButton()
+							.setLabel(`Conduct Audit Two`)
+							.setStyle('SECONDARY')
+							.setCustomId('conductAuditTwo')
+					),
+				],
+			};
+
+		// notify webhook client
+		const postedWebhookMessage = await auditsWebhookClient.send(
+			webhookOptions
+		);
+
+		// add the webhook posting id to the hackathon team
+		await prisma.hackathonTeam.update({
+			where: { id: hackathonTeam.id },
+			data: { webhookPosting: postedWebhookMessage.id },
 		});
+
+		const conductAuditInteractionCollector = async (
+			filter: (arg0: InteractionType) => boolean,
+			auditVersion: 'first' | 'second'
+		) => {
+			// collector
+			const collector =
+				interaction.channel.createMessageComponentCollector({
+					filter,
+					componentType: 'BUTTON',
+					max: 1,
+				});
+
+			collector.on('collect', async (i) => {
+				// put this admins ID into the audit conductor
+				const hackathonAudit = await prisma.hackathonAudit.update({
+					where: {
+						id: hackathonTeam.audits[
+							auditVersion === 'first' ? 0 : 1
+						].id,
+					},
+					data: { conductor: i.user.id },
+				});
+
+				// update the webhook with new information
+				await auditsWebhookClient.editMessage(
+					hackathonTeam.webhookPosting,
+					webhookOptions
+				);
+
+				// message the team members
+				hackathonTeam.members.forEach(async (member) => {
+					const user = await client.users.fetch(member.id);
+					console.log(user);
+					await user.dmChannel.send({
+						embeds: [
+							{
+								title: 'Audit One Confirmation',
+								description: `Your ${auditVersion} audit will be conducted by <@${i.user.id}> at <t:${hackathonAudit.epoch}:f>. We will notify you and your teammate via direct message 5 minutes prior to the audit. If by any chance you are not able to make it, you must talk to an admin and reschedule.`,
+								footer: {
+									text: 'Good Luck! - Buildergroop Team',
+								},
+							},
+						],
+					});
+				});
+			});
+		};
+
+		// filters
+		const filterOne = (i: InteractionType) =>
+			i.customId === 'conductAuditOne';
+		const filterTwo = (i: InteractionType) =>
+			i.customId === 'conductAuditTwo';
+
+		await conductAuditInteractionCollector(filterOne, 'first');
+		await conductAuditInteractionCollector(filterTwo, 'second');
 
 		await interaction.channel.send({
 			embeds: [
 				{
 					title: 'Thank you for participating in the Hackathon!',
 					description: `
-					Your response has been recorded. You will be notified shortly when an audit conducter is assigned to your audits. Please keep a close lookout for pings in the BuilderGroop Discord server as it is how we plan on reaching you when it's time to conduct your audit.
+					Your response has been recorded. You will be notified shortly when an audit conducter is assigned to your audits. Please keep a close lookout for pings in the BuilderGroop Discord server as well as DMs between you and I, so the BuilderGroop team can convey important information to you.
 				`,
 					footer: {
 						text: 'Good luck!',
