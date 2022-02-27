@@ -4,8 +4,8 @@
 	"description": "The official discord bot for the buildergroop community.",
 	"main": "dist/index.js",
 	"scripts": {
-		"build": "tsc",
-		"dev": "ts-node-dev --poll --exit-child --transpile-only ./src/index.ts",
+		"build": "npm run prisma:generate && tsc",
+		"dev": "npm run prisma:generate && ts-node-dev --poll --exit-child --transpile-only ./src/index.ts",
 		"start": "ts-node src/index.ts",
 		"prisma:migrate": "prisma migrate",
 		"prisma:push": "prisma db push",
