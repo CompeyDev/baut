@@ -69,7 +69,8 @@ export const channels = {
 	builderhacksS1Thread: '946475198318776330',
 	builderhacksFindATeammateThread: '946475145176957038',
 	requestAuditChannel: '947025387165216820', //
-
+	auditReminders: '947276166534946856',
+	
 	wins: '928628912282554398',
 	help: '926837221322022923',
 	resources: '913768563792297994',

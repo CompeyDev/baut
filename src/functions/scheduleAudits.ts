@@ -4,12 +4,15 @@ import {
 	MessageActionRow,
 	MessageButton,
 	MessagePayload,
+	TextChannel,
 	WebhookMessageOptions,
 } from 'discord.js';
 import { InteractionType } from '../types';
 import { prisma } from '../providers/prisma';
 import { auditsWebhookClient } from '../webhookClients';
 import { isDateInPast } from '../util/date';
+import { channels } from '../guild';
+import { HackathonAudit, HackathonTeam, Participant } from '@prisma/client';
 
 export async function scheduleAudits(message: Message) {
 	try {
@@ -303,6 +306,52 @@ export async function proposeAuditTimings(
 	}
 }
 
+async function remindFiveMinutesBeforeAudit(client: Client, hackathonTeam: HackathonTeam & {
+    audits: HackathonAudit[];
+    members: Participant[];
+}) {
+	// TODO replace id, add special role
+	const guild = client.guilds.cache.get("922780734849171458");
+	const channel = await guild.channels.fetch(channels.auditReminders) as TextChannel;
+	const firstReminder = async () => {
+		await channel.send({
+			embeds: [
+				{
+					title: 'Audit Reminder!',
+					description: `
+					Your first audit will begin in 5 minutes, at <t:${hackathonTeam.audits[0].epoch}:f>
+					<@!${hackathonTeam.members[0].id}> <@!${hackathonTeam.members[1].id}>
+				`,
+					footer: {
+						text: 'Good luck!',
+					},
+					color: 'BLURPLE',
+				},
+			],
+		});
+	}
+	const secondReminder = async () => {
+		await channel.send({
+			embeds: [
+				{
+					title: 'Audit Reminder!',
+					description: `
+					Your second audit will begin in 5 minutes, at <t:${hackathonTeam.audits[1].epoch}:f>
+					<@!${hackathonTeam.members[0].id}> <@!${hackathonTeam.members[1].id}>
+				`,
+					footer: {
+						text: 'Good luck!',
+					},
+					color: 'BLURPLE',
+				},
+			],
+		});
+	}
+	const nowEpochSeconds = Date.now() / 1000;
+	setTimeout(firstReminder, (hackathonTeam.audits[0].epoch - nowEpochSeconds - (5 * 60)) * 1000);
+	setTimeout(secondReminder, (hackathonTeam.audits[1].epoch - nowEpochSeconds - (5 * 60)) * 1000);
+}
+
 export async function closing(client: Client, interaction: InteractionType) {
 	try {
 		// fetch the hackathon team
@@ -427,6 +476,7 @@ export async function closing(client: Client, interaction: InteractionType) {
 				},
 			],
 		});
+		await remindFiveMinutesBeforeAudit(client, hackathonTeam);
 		return;
 	} catch (err) {
 		console.error(err);
