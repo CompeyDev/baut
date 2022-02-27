@@ -10,9 +10,9 @@ import {
 import { InteractionType } from '../types';
 import { prisma } from '../providers/prisma';
 import { auditsWebhookClient } from '../webhookClients';
-import { isDateInPast } from '../util/date';
 import { channels } from '../guild';
 import { HackathonAudit, HackathonTeam, Participant } from '@prisma/client';
+import { roles } from '../guild';
 
 export async function scheduleAudits(message: Message) {
 	try {
@@ -23,7 +23,7 @@ export async function scheduleAudits(message: Message) {
 
 		if (doesUserExist) {
 			await message.channel.send(
-				`<@${message.author.id}> you have already started the audit scheduling process. Please contact an admin if there are any issues.`
+				`<@${message.author.id}> you have already attempted the audit scheduling process. Please contact an admin if there are any issues.`
 			);
 			return;
 		}
@@ -237,11 +237,13 @@ export async function proposeAuditTimings(
 			content: '_ _',
 			embeds: [
 				{
-					title: 'Enter at what time you would like to have your first and second audit using comma seperated epoch timestamps.',
+					title: 'Enter at what times you would like to have your first and second audit, using comma seperated epoch timestamps.',
 					description: `
 				The epoch format is a **universal representation** for any certain date and time. https://unixtimestamp.com/ is a great resource that allows you to enter any date & time in your local timezone and get the epoch timestamp for it.
 				
-				You need to **enter the epoch timestamps in the following order**: \`{first audit timestamp}, {second audit timestamp}\' excluding the brackets.
+				You need to **enter the epoch timestamps in the following order**: \`{first_audit_timestamp}, {second_audit_timestamp}\' excluding the brackets.
+
+				**PLEASE NOTE!!** The intervals between your audits have to be a minimum of four hours.
 				`,
 					footer: {
 						text: 'If you have any questions at all, please dont hesitate to contact one of the admins.',
@@ -306,22 +308,26 @@ export async function proposeAuditTimings(
 	}
 }
 
-async function remindFiveMinutesBeforeAudit(client: Client, hackathonTeam: HackathonTeam & {
-    audits: HackathonAudit[];
-    members: Participant[];
-}) {
-	// TODO replace id, add special role
-	const guild = client.guilds.cache.get("922780734849171458");
-	const channel = await guild.channels.fetch(channels.auditReminders) as TextChannel;
+async function remindFiveMinutesBeforeAudit(
+	client: Client,
+	interaction: InteractionType,
+	hackathonTeam: HackathonTeam & {
+		audits: HackathonAudit[];
+		members: Participant[];
+	}
+) {
+	const channel = (await interaction.client.channels.fetch(
+		channels.auditReminders
+	)) as TextChannel;
 	const firstReminder = async () => {
 		await channel.send({
+			content: `<@!${hackathonTeam.members[0].id}> ${
+				hackathonTeam.members[1] && `<@!${hackathonTeam.members[1].id}>`
+			} <@!${roles.bhacksTeam}>`,
 			embeds: [
 				{
 					title: 'Audit Reminder!',
-					description: `
-					Your first audit will begin in 5 minutes, at <t:${hackathonTeam.audits[0].epoch}:f>
-					<@!${hackathonTeam.members[0].id}> <@!${hackathonTeam.members[1].id}>
-				`,
+					description: `The first audit for team "${hackathonTeam.name}" will begin in 5 minutes, at <t:${hackathonTeam.audits[0].epoch}:f>. Join the <#${channels.pool}> VC right away and we'll be with you shortly.`,
 					footer: {
 						text: 'Good luck!',
 					},
@@ -329,16 +335,16 @@ async function remindFiveMinutesBeforeAudit(client: Client, hackathonTeam: Hacka
 				},
 			],
 		});
-	}
+	};
 	const secondReminder = async () => {
 		await channel.send({
+			content: `<@!${hackathonTeam.members[0].id}> ${
+				hackathonTeam.members[1] && `<@!${hackathonTeam.members[1].id}>`
+			} <@!${roles.bhacksTeam}>`,
 			embeds: [
 				{
 					title: 'Audit Reminder!',
-					description: `
-					Your second audit will begin in 5 minutes, at <t:${hackathonTeam.audits[1].epoch}:f>
-					<@!${hackathonTeam.members[0].id}> <@!${hackathonTeam.members[1].id}>
-				`,
+					description: `The second audit for team "${hackathonTeam.name}" will begin in 5 minutes, at <t:${hackathonTeam.audits[1].epoch}:f>. Join the <#${channels.pool}> VC right away and we'll be with you shortly.`,
 					footer: {
 						text: 'Good luck!',
 					},
@@ -346,10 +352,16 @@ async function remindFiveMinutesBeforeAudit(client: Client, hackathonTeam: Hacka
 				},
 			],
 		});
-	}
+	};
 	const nowEpochSeconds = Date.now() / 1000;
-	setTimeout(firstReminder, (hackathonTeam.audits[0].epoch - nowEpochSeconds - (5 * 60)) * 1000);
-	setTimeout(secondReminder, (hackathonTeam.audits[1].epoch - nowEpochSeconds - (5 * 60)) * 1000);
+	setTimeout(
+		firstReminder,
+		(hackathonTeam.audits[0].epoch - nowEpochSeconds - 5 * 60) * 1000
+	);
+	setTimeout(
+		secondReminder,
+		(hackathonTeam.audits[1].epoch - nowEpochSeconds - 5 * 60) * 1000
+	);
 }
 
 export async function closing(client: Client, interaction: InteractionType) {
@@ -408,14 +420,6 @@ export async function closing(client: Client, interaction: InteractionType) {
 								inline: true,
 							},
 							{
-								name: 'Audit One Conductor',
-								value: `${
-									hackathonTeam.audits[0].conductor ||
-									'None Yet'
-								}`,
-								inline: true,
-							},
-							{
 								name: 'Completed?',
 								value: `${
 									hackathonTeam.audits[0].completed || false
@@ -426,14 +430,6 @@ export async function closing(client: Client, interaction: InteractionType) {
 							{
 								name: 'Audit Two Timing',
 								value: `<t:${hackathonTeam.audits[1].epoch}:f>`,
-								inline: true,
-							},
-							{
-								name: 'Audit Two Conductor',
-								value: `${
-									hackathonTeam.audits[0].conductor ||
-									'None Yet'
-								}`,
 								inline: true,
 							},
 							{
@@ -476,7 +472,7 @@ export async function closing(client: Client, interaction: InteractionType) {
 				},
 			],
 		});
-		await remindFiveMinutesBeforeAudit(client, hackathonTeam);
+		await remindFiveMinutesBeforeAudit(client, interaction, hackathonTeam);
 		return;
 	} catch (err) {
 		console.error(err);

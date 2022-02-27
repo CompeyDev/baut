@@ -57,6 +57,7 @@ export const roles = {
 	onethousandthmember: '939455950920769597',
 	member: '913703107660230656',
 	builderhacksParticipant: '935525574980546631',
+	bhacksTeam: '947299846669357106',
 } as const;
 
 export const channels = {
@@ -68,9 +69,12 @@ export const channels = {
 	builderhacks: '935260652031852604',
 	builderhacksS1Thread: '946475198318776330',
 	builderhacksFindATeammateThread: '946475145176957038',
-	requestAuditChannel: '947025387165216820', //
-	auditReminders: '947276166534946856',
-	
+
+	pool: '947001966477844520',
+
+	requestAuditChannel: '947291628245229618',
+	auditReminders: '947291669496229938',
+
 	wins: '928628912282554398',
 	help: '926837221322022923',
 	resources: '913768563792297994',
