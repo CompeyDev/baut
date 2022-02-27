@@ -10,10 +10,7 @@ import {
 import { clientOptions } from './config';
 import { token } from './constants';
 import { loadComponents, loadEvents } from './util/fileLoader';
-import { Collection, TextChannel, User } from 'discord.js';
-import { schedule } from 'node-cron';
-import messages from './messages';
-import { channels } from './guild';
+import { Collection } from 'discord.js';
 
 export const mammot = Mammot.client({
 	...clientOptions,
@@ -38,36 +35,36 @@ boot().then(() =>
 	mammot.login(token).then(() => {
 		mammot.client.on('rateLimit', console.log);
 
-		schedule('* * * * *', async () => {
-			const authors = new Set<User>();
-			[...messages].map((message) => authors.add(message.author));
-			const uniqueUsers = authors.size;
-			const uniqueMessages = messages.size;
-			console.log(
-				`${uniqueMessages} message${
-					uniqueMessages === 1 ? '' : 's'
-				} were sent by ${uniqueUsers} user${
-					uniqueUsers === 1 ? '' : 's'
-				}.`
-			);
-			const channel = mammot.client.channels.cache.get(
-				channels.chat
-			) as TextChannel;
-			messages.clear();
-			const MPM = uniqueMessages / uniqueUsers;
-			console.log(`MPM: ${MPM}`);
-			if (MPM >= 6) {
-				const result = uniqueMessages / MPM / 2;
-				const slowmode = Number(result.toString().split('.')[0]);
-				console.log(
-					`Setting slowmode to ${slowmode} second${
-						slowmode === 1 ? '' : 's'
-					}.`
-				);
-				channel.setRateLimitPerUser(slowmode);
-			} else {
-				channel.setRateLimitPerUser(0);
-			}
-		});
+		// schedule('* * * * *', async () => {
+		// 	const authors = new Set<User>();
+		// 	[...messages].map((message) => authors.add(message.author));
+		// 	const uniqueUsers = authors.size;
+		// 	const uniqueMessages = messages.size;
+		// 	console.log(
+		// 		`${uniqueMessages} message${
+		// 			uniqueMessages === 1 ? '' : 's'
+		// 		} were sent by ${uniqueUsers} user${
+		// 			uniqueUsers === 1 ? '' : 's'
+		// 		}.`
+		// 	);
+		// 	const channel = mammot.client.channels.cache.get(
+		// 		channels.chat
+		// 	) as TextChannel;
+		// 	messages.clear();
+		// 	const MPM = uniqueMessages / uniqueUsers;
+		// 	console.log(`MPM: ${MPM}`);
+		// 	if (MPM >= 6) {
+		// 		const result = uniqueMessages / MPM / 2;
+		// 		const slowmode = Number(result.toString().split('.')[0]);
+		// 		console.log(
+		// 			`Setting slowmode to ${slowmode} second${
+		// 				slowmode === 1 ? '' : 's'
+		// 			}.`
+		// 		);
+		// 		channel.setRateLimitPerUser(slowmode);
+		// 	} else {
+		// 		channel.setRateLimitPerUser(0);
+		// 	}
+		// });
 	})
 );
