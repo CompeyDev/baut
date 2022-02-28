@@ -323,7 +323,7 @@ async function remindFiveMinutesBeforeAudit(
 		await channel.send({
 			content: `<@!${hackathonTeam.members[0].id}> ${
 				hackathonTeam.members[1] && `<@!${hackathonTeam.members[1].id}>`
-			} <@!${roles.bhacksTeam}>`,
+			} <@&${roles.bhacksTeam}>`,
 			embeds: [
 				{
 					title: 'Audit Reminder!',
@@ -340,7 +340,7 @@ async function remindFiveMinutesBeforeAudit(
 		await channel.send({
 			content: `<@!${hackathonTeam.members[0].id}> ${
 				hackathonTeam.members[1] && `<@!${hackathonTeam.members[1].id}>`
-			} <@!${roles.bhacksTeam}>`,
+			} <@&${roles.bhacksTeam}>`,
 			embeds: [
 				{
 					title: 'Audit Reminder!',
