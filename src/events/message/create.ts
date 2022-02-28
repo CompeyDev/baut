@@ -33,21 +33,21 @@ export default new Event(
 			sendHackathonAnnouncement(message);
 		}
 
-		if (
-			message.content === '!schedule_audits' &&
-			message.channelId === channels.requestAuditChannel
-		) {
-			console.log('[audit command triggered]');
-			await executeOrFail(
-				async () => {
-					scheduleAudits(message);
-				},
-				async () =>
-					await message.channel.send(
-						'We ran into an error. Please Contact a Server Admin.'
-					)
-			);
-		}
+// 		if (
+// 			message.content === '!schedule_audits' &&
+// 			message.channelId === channels.requestAuditChannel
+// 		) {
+// 			console.log('[audit command triggered]');
+// 			await executeOrFail(
+// 				async () => {
+// 					scheduleAudits(message);
+// 				},
+// 				async () =>
+// 					await message.channel.send(
+// 						'We ran into an error. Please Contact a Server Admin.'
+// 					)
+// 			);
+// 		}
 
 		switch (message.channel.id) {
 			case channels.wins:
